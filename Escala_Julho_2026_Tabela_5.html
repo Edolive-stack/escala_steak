@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Escala Julho 2026 — Steak Barbecue</title>
+<style>
+:root{
+  --brand:#1A1A2E;
+  --gold:#C9A84C;
+  --light:#F5F3EF;
+  --gray:#888780;
+  --dark:#2C2C2A;
+  --green:#0F6E56;
+  --folga-bg:#E8E6DF;
+  --dsr-color:#0F6E56;
+  --dobra-bg:#FCEBEB;
+  --dobra-color:#A32D2D;
+  --ferias-color:#888780;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
+  background:var(--light);
+  color:var(--dark);
+  padding-bottom:2rem;
+  font-size:13px;
+}
+.header{
+  background:var(--brand);
+  color:#fff;
+  padding:1rem 1rem .85rem;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+.header h1{font-size:16px;font-weight:700;margin-bottom:1px}
+.header p{font-size:11px;color:var(--gold);font-weight:500}
+
+.week-tabs{
+  display:flex;gap:5px;padding:.6rem .7rem;
+  overflow-x:auto;background:var(--brand);
+  position:sticky;top:54px;z-index:49;
+  -webkit-overflow-scrolling:touch;
+}
+.week-tabs::-webkit-scrollbar{display:none}
+.wt-btn{
+  flex-shrink:0;background:rgba(255,255,255,.08);color:#fff;
+  border:none;padding:7px 12px;border-radius:16px;
+  font-size:12px;font-weight:600;white-space:nowrap;
+}
+.wt-btn.active{background:var(--gold);color:var(--brand)}
+
+.scroll-wrap{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  padding:.6rem;
+}
+table{
+  border-collapse:collapse;
+  width:100%;
+  min-width:780px;
+  background:#fff;
+}
+th,td{
+  border:1px solid #ddd;
+  padding:7px 6px;
+  text-align:center;
+  white-space:nowrap;
+  font-size:11.5px;
+}
+.col-name{
+  text-align:left;
+  font-weight:700;
+  min-width:120px;
+  position:sticky;
+  left:0;
+  background:#fff;
+  z-index:2;
+}
+thead th{
+  background:var(--brand);
+  color:#fff;
+  font-size:10.5px;
+  font-weight:700;
+  position:sticky;
+  top:0;
+  z-index:3;
+}
+thead th.col-name{
+  z-index:4;
+  background:var(--brand);
+}
+thead .dow{display:block;font-size:10px}
+thead .ddate{display:block;font-size:9.5px;color:var(--gold);font-weight:500}
+
+.sector-row td{
+  background:var(--brand);
+  color:#fff;
+  font-weight:700;
+  text-align:left;
+  font-size:11px;
+  letter-spacing:.03em;
+  padding:6px 6px;
+}
+
+tr.row-even td.col-name,
+tr.row-even td.cell-work{background:#fafaf8}
+
+td.cell-folga{background:var(--folga-bg);color:var(--gray);font-weight:600}
+td.cell-dsr{background:#EAF3DE;color:var(--dsr-color);font-weight:700}
+td.cell-dobra{background:var(--dobra-bg);color:var(--dobra-color);font-weight:600;font-size:10.5px}
+td.cell-ferias{background:#F0EEE9;color:var(--ferias-color);font-weight:700}
+td.cell-work{color:var(--dark)}
+
+.legend{
+  display:flex;flex-wrap:wrap;gap:10px;
+  background:#fff;border-radius:10px;padding:9px 12px;margin:0 .6rem 1rem;
+  font-size:11px;color:var(--gray);
+}
+.legend span{display:flex;align-items:center;gap:5px}
+.lg-box{width:11px;height:11px;border-radius:2px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Steak Barbecue — Ribeirão Preto</h1>
+  <p>Escala Julho 2026</p>
+</div>
+
+<div class="week-tabs" id="weekTabs">
+  <button class="wt-btn active" data-week="0">01-05/07</button>
+  <button class="wt-btn" data-week="1">06-12/07</button>
+  <button class="wt-btn" data-week="2">13-19/07</button>
+  <button class="wt-btn" data-week="3">20-26/07</button>
+  <button class="wt-btn" data-week="4">27-31/07</button>
+</div>
+
+<div class="scroll-wrap">
+  <table id="escalaTable"></table>
+</div>
+
+<div class="legend">
+  <span><span class="lg-box" style="background:#fff;border:1px solid #ddd"></span>Trabalho</span>
+  <span><span class="lg-box" style="background:var(--folga-bg)"></span>Folga</span>
+  <span><span class="lg-box" style="background:#EAF3DE"></span>DSR</span>
+  <span><span class="lg-box" style="background:var(--dobra-bg)"></span>Dobra</span>
+  <span><span class="lg-box" style="background:#F0EEE9"></span>Férias</span>
+</div>
+
+<script>
+const ESCALA = {"dias": [{"data": "2026-07-01", "dia_semana": "Quarta", "dia_num": 1}, {"data": "2026-07-02", "dia_semana": "Quinta", "dia_num": 2}, {"data": "2026-07-03", "dia_semana": "Sexta", "dia_num": 3}, {"data": "2026-07-04", "dia_semana": "Sábado", "dia_num": 4}, {"data": "2026-07-05", "dia_semana": "Domingo", "dia_num": 5}, {"data": "2026-07-06", "dia_semana": "Segunda", "dia_num": 6}, {"data": "2026-07-07", "dia_semana": "Terça", "dia_num": 7}, {"data": "2026-07-08", "dia_semana": "Quarta", "dia_num": 8}, {"data": "2026-07-09", "dia_semana": "Quinta", "dia_num": 9}, {"data": "2026-07-10", "dia_semana": "Sexta", "dia_num": 10}, {"data": "2026-07-11", "dia_semana": "Sábado", "dia_num": 11}, {"data": "2026-07-12", "dia_semana": "Domingo", "dia_num": 12}, {"data": "2026-07-13", "dia_semana": "Segunda", "dia_num": 13}, {"data": "2026-07-14", "dia_semana": "Terça", "dia_num": 14}, {"data": "2026-07-15", "dia_semana": "Quarta", "dia_num": 15}, {"data": "2026-07-16", "dia_semana": "Quinta", "dia_num": 16}, {"data": "2026-07-17", "dia_semana": "Sexta", "dia_num": 17}, {"data": "2026-07-18", "dia_semana": "Sábado", "dia_num": 18}, {"data": "2026-07-19", "dia_semana": "Domingo", "dia_num": 19}, {"data": "2026-07-20", "dia_semana": "Segunda", "dia_num": 20}, {"data": "2026-07-21", "dia_semana": "Terça", "dia_num": 21}, {"data": "2026-07-22", "dia_semana": "Quarta", "dia_num": 22}, {"data": "2026-07-23", "dia_semana": "Quinta", "dia_num": 23}, {"data": "2026-07-24", "dia_semana": "Sexta", "dia_num": 24}, {"data": "2026-07-25", "dia_semana": "Sábado", "dia_num": 25}, {"data": "2026-07-26", "dia_semana": "Domingo", "dia_num": 26}, {"data": "2026-07-27", "dia_semana": "Segunda", "dia_num": 27}, {"data": "2026-07-28", "dia_semana": "Terça", "dia_num": 28}, {"data": "2026-07-29", "dia_semana": "Quarta", "dia_num": 29}, {"data": "2026-07-30", "dia_semana": "Quinta", "dia_num": 30}, {"data": "2026-07-31", "dia_semana": "Sexta", "dia_num": 31}], "colaboradores": {"Josias": {"funcao": "Churrasqueiro", "setor": "Cozinha", "status": [{"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "dsr", "label": "Folga (DSR)"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}]}, "Jéssica": {"funcao": "Cozinheira", "setor": "Cozinha", "status": [{"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "dsr", "label": "Folga (DSR)"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "dsr", "label": "Folga (DSR)"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}]}, "Patrícia": {"funcao": "Cozinheira", "setor": "Cozinha", "status": [{"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "dsr", "label": "Folga (DSR)"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}]}, "Mª Auxiliadora": {"funcao": "Aux. Cozinha", "setor": "Cozinha", "status": [{"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "dsr", "label": "Folga (DSR)"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "dsr", "label": "Folga (DSR)"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}]}, "Rodrigo": {"funcao": "Aux. Cozinha", "setor": "Cozinha", "status": [{"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "folga", "label": "Folga"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}]}, "Ana Julia": {"funcao": "Garçom", "setor": "Salão", "status": [{"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "dsr", "label": "Folga (DSR)"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "dsr", "label": "Folga (DSR)"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}]}, "Edimilson": {"funcao": "Garçom", "setor": "Salão", "status": [{"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "dsr", "label": "Folga (DSR)"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}]}, "Carlos": {"funcao": "Garçom", "setor": "Salão", "status": [{"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "dobra", "label": "9h-10h30 / 11h30-17h20 + 16h-17h30 / 18h30-00h20"}, {"status": "dobra", "label": "9h-10h30 / 11h30-17h20 + 16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "dobra", "label": "9h-10h30 / 11h30-17h20 + 16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "folga", "label": "Folga"}, {"status": "dobra", "label": "9h-10h30 / 11h30-17h20 + 16h-17h30 / 18h30-00h20"}, {"status": "dobra", "label": "9h-10h30 / 11h30-17h20 + 16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "dobra", "label": "9h-10h30 / 11h30-17h20 + 16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "folga", "label": "Folga"}, {"status": "dobra", "label": "9h-10h30 / 11h30-17h20 + 16h-17h30 / 18h30-00h20"}, {"status": "dobra", "label": "9h-10h30 / 11h30-17h20 + 16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "dobra", "label": "9h-10h30 / 11h30-17h20 + 16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "folga", "label": "Folga"}, {"status": "dobra", "label": "9h-10h30 / 11h30-17h20 + 16h-17h30 / 18h30-00h20"}, {"status": "dobra", "label": "9h-10h30 / 11h30-17h20 + 16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}, {"status": "trabalho", "label": "16h-17h30 / 18h30-00h20"}]}, "Jhonatan": {"funcao": "Garçom", "setor": "Salão", "status": [{"status": "folga", "label": "Folga"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}, {"status": "ferias", "label": "Férias"}]}, "Aline": {"funcao": "Caixa", "setor": "Caixa", "status": [{"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "dsr", "label": "Folga (DSR)"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "dsr", "label": "Folga (DSR)"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}, {"status": "trabalho", "label": "9h-10h30 / 11h30-17h20"}]}, "Mirela": {"funcao": "ADM", "setor": "ADM", "status": [{"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "folga", "label": "Folga"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "folga", "label": "Folga"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "folga", "label": "Folga"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "folga", "label": "Folga"}, {"status": "folga", "label": "Folga"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}, {"status": "trabalho", "label": "08h-12h / 13h-17h48"}]}}};
+
+const dowAbbr = ["DOM","SEG","TER","QUA","QUI","SEX","SÁB"];
+function dowOf(dataStr){ return new Date(dataStr+'T00:00:00').getDay(); }
+function fmtDate(dataStr){ const [y,m,d]=dataStr.split('-'); return `${d}/${m}`; }
+
+const weekRanges = [
+  [0,5],
+  [5,12],
+  [12,19],
+  [19,26],
+  [26,31]
+];
+
+const setorOrder = ["Cozinha","Salão","Caixa","ADM"];
+const setorLabel = {Cozinha:"COZINHA",Salão:"GARÇOM",Caixa:"CAIXA",ADM:"ADM"};
+
+let currentWeek = 0;
+
+function cellClass(status){
+  if(status==='folga') return 'cell-folga';
+  if(status==='dsr') return 'cell-dsr';
+  if(status==='dobra') return 'cell-dobra';
+  if(status==='ferias') return 'cell-ferias';
+  return 'cell-work';
+}
+
+function renderTable(){
+  const [start,end] = weekRanges[currentWeek];
+  const diasSemana = ESCALA.dias.slice(start,end);
+
+  let html = '<thead><tr><th class="col-name">Colaborador</th>';
+  diasSemana.forEach(d => {
+    html += `<th><span class="dow">${dowAbbr[dowOf(d.data)]}</span><span class="ddate">${fmtDate(d.data)}</span></th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  setorOrder.forEach(setor => {
+    const colabs = Object.entries(ESCALA.colaboradores).filter(([n,info]) => info.setor === setor);
+    if(colabs.length === 0) return;
+
+    html += `<tr class="sector-row"><td colspan="${diasSemana.length+1}">${setorLabel[setor]}</td></tr>`;
+
+    colabs.forEach(([nome, info], i) => {
+      html += `<tr class="${i%2===1?'row-even':''}"><td class="col-name">${nome}</td>`;
+      diasSemana.forEach((d, idx) => {
+        const globalIdx = start + idx;
+        const st = info.status[globalIdx];
+        html += `<td class="${cellClass(st.status)}">${st.label}</td>`;
+      });
+      html += '</tr>';
+    });
+  });
+
+  html += '</tbody>';
+  document.getElementById('escalaTable').innerHTML = html;
+}
+
+document.getElementById('weekTabs').addEventListener('click', (e) => {
+  const btn = e.target.closest('.wt-btn');
+  if(!btn) return;
+  document.querySelectorAll('.wt-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentWeek = parseInt(btn.dataset.week);
+  renderTable();
+});
+
+renderTable();
+</script>
+
+</body>
+</html>
